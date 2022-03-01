@@ -12,6 +12,14 @@ This leverages to key Red Hat projects
  - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/converting_from_an_rpm-based_linux_distribution_to_rhel/index[Converting from an RPM-based Linux distribution to RHEL]
  - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/upgrading_from_rhel_7_to_rhel_8/index 
 
+== Demo Steps
+
+
+If you want to try some of the demo code and need a configured Centos Linux host here are some initial steps
+
+- Deploy a link:docs/Demo_VM.adoc[local or cloud hosted Centos Linux environment]
+
+
 == Standards
 
 All documentation will licenced under a http://creativecommons.org/licenses/by-sa/4.0/[Creative Commons Attribution-ShareAlike 4.0 International License],

@@ -1,0 +1,109 @@
+= Deployment of Cloud / Virt ready OS Images
+
+If you're running this demo code on a cloud hosted environment then simply select their pre-configured
+cloud ready image, and skip to the setup of the demo tooling using link:./Demo_Setup.adoc[Ansible].
+
+Follow these instructions to run a local VM under KVM + Libvirt.
+
+== Validated Images ==
+
+* https://cloud.centos.org/altarch/7/images/CentOS-7-x86_64-GenericCloud-2009.qcow2[CentOS-7-x86_64-GenericCloud-2009.qcow2]
+
+The process I'm using is I create a working snapshot off the working image and then 
+customize the image to set a simple password for the root user. Ideally we should be using
+the cloud-init capabilities to inject a valid user and credentials, but this is a quick
+hack to speed up this demo deployment.
+
+== Deployment Customisation
+You will need to update the following varibles to suit you local KVM environment
+
+- VM_BRIDGE to match the network you're using
+- VM_BASE to the location of the base qcow image we're working off
+- VM_IMAGE to the location you want to use for the working image.
+
+The current process uses ``virt-customize`` to strip out cloud-init
+from the base image and set an initial password for the root user to
+_password_.
+
+== Deploy Centos VM under KVM 
+
+
+[source,bash]
+----
+VM_NAME=LEAPP2RHEL
+VM_MEMORY=2048
+VM_CPU=2
+OS_VARIANT=centos7
+VM_BRIDGE=virbr1
+
+VM_BASE=/opt/Virtual/ISO/CentOS-7-x86_64-GenericCloud-2009.qcow2
+VM_IMAGE=/opt/Virtual/images/Leepp2RHEL.qcow2
+
+# Create our working snapshot
+qemu-img create -f qcow2 -F qcow2 \
+-o backing_file=${VM_BASE} ${VM_IMAGE}
+
+# Enable root password login and remove cloud-init
+virt-customize -a ${VM_IMAGE} \
+-root-password password:password --uninstall cloud-init \
+--run-command 'echo PermitRootLogin yes >> /etc/ssh/sshd_config' 
+
+# Then Create the VM
+
+virt-install --name ${VM_NAME} --memory ${VM_MEMORY} --vcpus ${VM_CPU} \
+    --disk path=$VM_IMAGE,format=qcow2,bus=scsi,discard=unmap \
+    --os-variant=${OS_VARIANT} \
+    --controller=type=scsi,model=virtio-scsi \
+    --connect qemu:///system \
+    --virt-type kvm \
+    --noautoconsole \
+    --import \
+    --network type=bridge,source=${VM_BRIDGE} --graphics vnc
+
+virsh console ${VM_NAME}
+
+----
+
+The Cloud Ready Centos 7 & 8 images currently allow ssh login as root. 
+If you're working with a vanilla cloud image on AWS or Azure you might
+need to type the following via a remote console.
+
+[source,bash]
+----
+echo "PermitRootLogin yes" > /etc/ssh/sshd_config.d/01-permitrootlogin.conf
+systemctl restart sshd
+----
+
+I also recommend adding an entry in ~/.ssh/config with the correct IP address for your VM
+which will simplify running the ansible playbook. If you're using KVM you should see the
+IP address in the virsh console.
+
+----
+Host leapp2rhel
+Hostname 192.168.124.138
+StrictHostKeyChecking no
+UserKnownHostsFile /dev/null
+User root
+----
+
+You should then enable login via your ssh-key so that Ansible can automate the rest of the setup
+
+
+[source,bash]
+----
+ssh-copy-id leapp2rhel
+----
+
+== Environment Cleanup
+Providing you've got the same shell open you can quickly clean up the deployed environment via
+
+[source,bash]
+----
+virsh destroy ${VM_NAME}
+virsh undefine ${VM_NAME}
+rm ${VM_IMAGE} 
+----
+
+---
+link:Demo_Setup.adoc[Next Step] or
+link:../README.adoc[Return]
