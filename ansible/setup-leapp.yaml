@@ -1,0 +1,12 @@
+---
+
+- hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Enable the appropriate RHEL extras repository
+      rhsm_repository:
+        name: rhel-{{ ansible_distribution_major_version }}-server-extras-rpms
+        state: enabled
+

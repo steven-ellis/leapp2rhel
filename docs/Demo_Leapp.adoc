@@ -1,0 +1,23 @@
+= Demo Leapp
+
+We first need to make sure we've got the required repositories and requirements
+for leapp to run.
+
+[source,bash]
+----
+cd ansible
+
+ansible-playbook  -i hosts setup-leapp.yaml 
+----
+
+We're then going to leverage a https://github.com/mrjoshuap/ansible-leapp[leapp role] from Ansible Galaxy
+developed by one of the Red Hat team
+
+[source,bash]
+----
+ansible-galaxy  install -r requirements.yaml
+
+ansible-playbook  -i hosts run-leapp.yaml
+----
+
+link:../README.adoc[Return]
