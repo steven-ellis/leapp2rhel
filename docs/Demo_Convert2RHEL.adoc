@@ -1,4 +1,4 @@
-= Demo Leapp
+= Demo Convert2RHEL
 
 We're going to use an ansible playbook from the upstream project team to install
 the core requirements for convert2rhel to run
@@ -13,8 +13,10 @@ ansible-playbook  -i hosts setup-convert2rhel.yml
 ----
 
 
-For the run portion we need to make sure we've got a valid Red Hat portal login
+For the run portion we need to make sure we've got a valid Red Hat portal login in our secrets.yaml.
 
+The actual run can take over 10 minutes depending on your connection and VM performance, and once completed 
+the VM will be rebooted.
 
 [source,bash]
 ----
@@ -24,4 +26,13 @@ ansible-playbook  -i hosts run-convert2rhel.yml --extra-vars "@secrets.yaml"
 
 ----
 
+If you want to watch some of the update progress you can remote into the virtual machine and monitor the yum log
+
+[source,bash]
+----
+ssh leapp2rhel
+
+tail -f /var/log/yum.log
+
+----
 
