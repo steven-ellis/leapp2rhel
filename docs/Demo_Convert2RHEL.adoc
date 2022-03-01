@@ -1,0 +1,27 @@
+= Demo Leapp
+
+We're going to use an ansible playbook from the upstream project team to install
+the core requirements for convert2rhel to run
+
+[source,bash]
+----
+cd ansible
+
+curl -L -O https://github.com/oamg/convert2rhel/raw/main/ansible/setup-convert2rhel.yml
+
+ansible-playbook  -i hosts setup-convert2rhel.yml 
+----
+
+
+For the run portion we need to make sure we've got a valid Red Hat portal login
+
+
+[source,bash]
+----
+curl -L -O https://github.com/oamg/convert2rhel/raw/main/ansible/run-convert2rhel.yml
+
+ansible-playbook  -i hosts run-convert2rhel.yml --extra-vars "@secrets.yaml"
+
+----
+
+

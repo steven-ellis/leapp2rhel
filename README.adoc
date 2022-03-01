@@ -18,6 +18,7 @@ This leverages to key Red Hat projects
 If you want to try some of the demo code and need a configured Centos Linux host here are some initial steps
 
 - Deploy a link:docs/Demo_VM.adoc[local or cloud hosted Centos Linux environment]
+- Convery link:docs/Demo_Convert2RHEL.adoc[Centos environment to RHEL]
 
 
 == Standards
