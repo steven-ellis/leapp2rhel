@@ -1,0 +1,22 @@
+= leapp2rhel
+Centos to RHEL demo with additional upgrade step
+
+This leverages to key Red Hat projects
+
+ - https://github.com/oamg/convert2rhel[Convert2RHEL]
+ - https://github.com/oamg/leapp[Leapp]
+
+== Product Documentation
+
+ - https://access.redhat.com/articles/2360841[How to perform an unsupported conversion from a RHEL-derived Linux distribution to RHEL]
+ - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/converting_from_an_rpm-based_linux_distribution_to_rhel/index[Converting from an RPM-based Linux distribution to RHEL]
+ - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/upgrading_from_rhel_7_to_rhel_8/index 
+
+== Standards
+
+All documentation will licenced under a http://creativecommons.org/licenses/by-sa/4.0/[Creative Commons Attribution-ShareAlike 4.0 International License],
+whilst code, including Ansible playbooks, will be under a link:LICENSE[GPL v3 licence].
+
+image::https://licensebuttons.net/l/by-sa/4.0/88x31.png[CC BY-SA-4.0 Logo]
+
+All documentation will be treated like code and produced where possible in https://docs.asciidoctor.org/asciidoc/latest[AsciiDoc].
