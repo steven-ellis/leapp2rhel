@@ -105,5 +105,5 @@ rm ${VM_IMAGE}
 ----
 
 ---
-link:Demo_Setup.adoc[Next Step] or
+link:Demo_Convert2RHEL.adoc[Next Step] or
 link:../README.adoc[Return]

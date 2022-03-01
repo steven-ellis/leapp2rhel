@@ -1,4 +1,5 @@
 secrets.yaml
 setup-convert2rhel.yml
 run-convert2rhel.yml
+leapp-reports
 

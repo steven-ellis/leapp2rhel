@@ -11,7 +11,9 @@ ansible-playbook  -i hosts setup-leapp.yaml
 ----
 
 We're then going to leverage a https://github.com/mrjoshuap/ansible-leapp[leapp role] from Ansible Galaxy
-developed by one of the Red Hat team
+developed by one of the Red Hat team.
+
+We also need to pull down the latest https://access.redhat.com/articles/3664871[leapp metadata tgz] and install this into the link:../ansible/files[files] directory
 
 [source,bash]
 ----
@@ -19,5 +21,34 @@ ansible-galaxy  install -r requirements.yaml
 
 ansible-playbook  -i hosts run-leapp.yaml
 ----
+
+You can now browse the https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/upgrading_from_rhel_7_to_rhel_8/assembly_preparing-for-the-upgrade_upgrading-from-rhel-7-to-rhel-8[generated preupgrade report] under link:../ansible/leapp-reports/leapp2rhel/var/log/leapp/leapp-report-preupgrade.txt[leapp-report-preupgrade.txt] or use cockpit on port 9090 to view and
+remediate potential issues.
+
+With our default Centos to RHEL7 migrated image we get a blocker due to a pam pkcs module
+that requires
+
+[source,bash]
+----
+leapp answer --section remove_pam_pkcs11_module_check.confirm=True
+----
+
+There are usually a number of additional post upgrade recommendations
+
+ - Please run "alternatives --set python /usr/bin/python3" after upgrade
+ - Remaining Centos 7 package "yum-plugin-fastestmirror"
+ - Grub core isn't updated due to the install location on a legacy environment
+
+Once you've remedated any blockes and undertstand the other potential risks/issues you can login
+to your demo environment and run
+
+[source,bash]
+----
+leapp upgrade
+----
+
+Once completed make sure you follow the https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/upgrading_from_rhel_7_to_rhel_8/verifying-the-post-upgrade-state-of-the-rhel-8-system_upgrading-from-rhel-7-to-rhel-8[post upgrade verification steps].
+
+
 
 link:../README.adoc[Return]

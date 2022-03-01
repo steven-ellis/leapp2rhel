@@ -19,7 +19,7 @@ If you want to try some of the demo code and need a configured Centos Linux host
 
 - Deploy a link:docs/Demo_VM.adoc[local or cloud hosted Centos Linux environment]
 - Convert link:docs/Demo_Convert2RHEL.adoc[Centos environment to RHEL] with Convert2RHEL
-- Upgrade your RHEL environment via Leapp
+- Upgrade link:docs/Demo_Leapp.adoc[your RHEL environment] via Leapp
 
 
 == Standards
