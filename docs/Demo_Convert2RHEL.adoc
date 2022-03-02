@@ -1,5 +1,43 @@
 = Demo Convert2RHEL
 
+We recommend you review the latest Convert2RHEL documentation before proceeding.
+ - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/converting_from_an_rpm-based_linux_distribution_to_rhel/index[Converting from an RPM-based Linux distribution to RHEL]
+
+
+*NOTE* You will need to provide some login credentials so that Convert2RHEL can 
+to pull packages from Red Hat's CDN service.  The supplied ansible playbook will automate the registration providing you've got a valid secrets.yaml.
+A sample link:../ansible/secrets.yaml.example[secrets.yaml.example] has been provided which you'll need to update with a username
+and password.
+
+[source,bash]
+----
+cd ansible
+cp secrets.yaml.example secrets.yaml
+nano secrets.yaml
+
+# Update the secrets file
+
+cd -
+----
+
+
+*NOTE* If you're using the standard Centos 8 Cloud Image from the previous step this will need to be patched to Centos 8.5
+before running Convert2RHEL.
+
+[source,bash]
+----
+ssh leapp2rhel
+sed -i 's/^mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+sed -i 's|#baseurl=http://mirror.centos.org|baseurl=https://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+
+yum -y upgrade
+
+# Confirm we're running version 8.5
+cat /etc/centos-release
+
+logout
+----
+
 We're going to use an ansible playbook from the upstream project team to install
 the core requirements for convert2rhel to run
 
