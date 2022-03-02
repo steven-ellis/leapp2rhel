@@ -6,21 +6,26 @@ This leverages to key Red Hat projects
  - https://github.com/oamg/convert2rhel[Convert2RHEL]
  - https://github.com/oamg/leapp[Leapp]
 
-== Product Documentation
+== Demo Overview
 
- - https://access.redhat.com/articles/2360841[How to perform an unsupported conversion from a RHEL-derived Linux distribution to RHEL]
- - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/converting_from_an_rpm-based_linux_distribution_to_rhel/index[Converting from an RPM-based Linux distribution to RHEL]
- - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/upgrading_from_rhel_7_to_rhel_8/index 
+This demo migrates standard cloud Centos images to recent releases of https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux[Red Hat Enterprise Linux].
+
+image::docs/leapp2rhel.png[] 
 
 == Demo Steps
 
-
-If you want to try some of the demo code and need a configured Centos Linux host here are some initial steps
+Here are the setps you can follow to reproduce this demo - 
 
 - Deploy a link:docs/Demo_VM.adoc[local or cloud hosted Centos Linux environment]
 - Convert link:docs/Demo_Convert2RHEL.adoc[Centos environment to RHEL] with Convert2RHEL
 - Upgrade link:docs/Demo_Leapp.adoc[your RHEL environment] via Leapp
 
+
+== Product Documentation
+
+ - https://access.redhat.com/articles/2360841[How to perform an unsupported conversion from a RHEL-derived Linux distribution to RHEL]
+ - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/converting_from_an_rpm-based_linux_distribution_to_rhel/index[Converting from an RPM-based Linux distribution to RHEL]
+ - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/upgrading_from_rhel_7_to_rhel_8/index 
 
 == Standards
 
