@@ -31,20 +31,30 @@ _password_.
 
 [source,bash]
 ----
+# Replace these with the locations you use to store base images
+# and running VM Images
+BASE_DIR=/opt/Virtual/ISO
+VM_DIR=/opt/Virtual/images
+
+# For Centos 7
+OS_VARIANT=centos7
+BASE_IMAGE=CentOS-7-x86_64-GenericCloud-2009.qcow2
+
+# For Centos 8
+OS_VARIANT=centos8
+BASE_IMAGE=CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
+
+# Define our virtual environment
+# Make sure the VM_BRIDE matches a bridge or nat network in your
+# libvirt environment
+
 VM_NAME=LEAPP2RHEL
 VM_MEMORY=2048
 VM_CPU=2
 VM_BRIDGE=virbr1
 
-# For Centos 7
-OS_VARIANT=centos7
-VM_BASE=/opt/Virtual/ISO/CentOS-7-x86_64-GenericCloud-2009.qcow2
-
-# For Centos 8
-OS_VARIANT=centos8
-VM_BASE=/opt/Virtual/ISO/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
-
-VM_IMAGE=/opt/Virtual/images/Leepp2RHEL.qcow2
+VM_BASE=${BASE_DIR}/${BASE_IMAGE}
+VM_IMAGE=${VM_DIR}/Leepp2RHEL.qcow2
 
 # Create our working snapshot
 qemu-img create -f qcow2 -F qcow2 \
