@@ -1,7 +1,8 @@
 = Demo Convert2RHEL
 
 We recommend you review the latest Convert2RHEL documentation before proceeding.
- - https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/converting_from_an_rpm-based_linux_distribution_to_rhel/index[Converting from an RPM-based Linux distribution to RHEL]
+
+- https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/converting_from_an_rpm-based_linux_distribution_to_rhel/index[Converting from an RPM-based Linux distribution to RHEL]
 
 
 *NOTE* You will need to provide some login credentials so that Convert2RHEL can 
@@ -20,17 +21,22 @@ nano secrets.yaml
 cd -
 ----
 
-
+== Centos 8 Initial Upgrade Step
 *NOTE* If you're using the standard Centos 8 Cloud Image from the previous step this will need to be patched to Centos 8.5
 before running Convert2RHEL.
+
+As Centos 8 is now EOL you need to update the YUM repostory to point to vault.centos.org in order to update.
 
 [source,bash]
 ----
 ssh leapp2rhel
+
+# wait for the login to complete
+
 sed -i 's/^mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
 sed -i 's|#baseurl=http://mirror.centos.org|baseurl=https://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 
-yum -y upgrade
+dnf -y distrosync
 
 # Confirm we're running version 8.5
 cat /etc/centos-release
@@ -38,8 +44,10 @@ cat /etc/centos-release
 logout
 ----
 
-We're going to use an ansible playbook from the upstream project team to install
-the core requirements for convert2rhel to run
+== Use Ansible to Convert Centos 7 or 8 to Red Hat Enterprise Linux
+
+We're going to use an ansible playbook from the upstream https://github.com/oamg[OS and Application Modernization Group]
+repository to install the core requirements for convert2rhel.
 
 [source,bash]
 ----
@@ -50,11 +58,10 @@ curl -L -O https://github.com/oamg/convert2rhel/raw/main/ansible/setup-convert2r
 ansible-playbook  -i hosts setup-convert2rhel.yml 
 ----
 
+For the run portion we need to make sure we've got a valid Red Hat portal login in our secrets.yaml (see above).
 
-For the run portion we need to make sure we've got a valid Red Hat portal login in our secrets.yaml.
-
-The actual run can take over 10 minutes depending on your connection and VM performance, and once completed 
-the VM will be rebooted.
+This  run can take around 10-15 minutes depending on your connection and VM performance, and once completed 
+the VM will be automatically rebooted.
 
 [source,bash]
 ----
@@ -64,16 +71,68 @@ ansible-playbook  -i hosts run-convert2rhel.yml --extra-vars "@secrets.yaml"
 
 ----
 
-If you want to watch some of the update progress you can remote into the virtual machine and monitor the yum log
+If you want to monitor conversion progress you can remote into the virtual machine and monitor
+the convert2rhel logs.
 
 [source,bash]
 ----
-ssh leapp2rhel
 
-tail -f /var/log/yum.log
+ssh leapp2rhel  tail -f /var/log/convert2rhel/convert2rhel.log
+----
 
+== Confirm upgraded OS Version
+
+[source,bash]
+----
+ssh leapp2rhel cat /etc/os-release
+----
+
+This should produce output similar to the following for a Centos 7 to
+Red Hat Enterprise Linux migration
+
+----
+NAME="Red Hat Enterprise Linux Server"
+VERSION="7.9 (Maipo)"
+ID="rhel"
+ID_LIKE="fedora"
+VARIANT="Server"
+VARIANT_ID="server"
+VERSION_ID="7.9"
+PRETTY_NAME="Red Hat Enterprise Linux Server 7.9 (Maipo)"
+ANSI_COLOR="0;31"
+CPE_NAME="cpe:/o:redhat:enterprise_linux:7.9:GA:server"
+HOME_URL="https://www.redhat.com/"
+BUG_REPORT_URL="https://bugzilla.redhat.com/"
+
+REDHAT_BUGZILLA_PRODUCT="Red Hat Enterprise Linux 7"
+REDHAT_BUGZILLA_PRODUCT_VERSION=7.9
+REDHAT_SUPPORT_PRODUCT="Red Hat Enterprise Linux"
+REDHAT_SUPPORT_PRODUCT_VERSION="7.9"
+----
+
+And the following for a Centos 8 to
+Red Hat Enterprise Linux migration
+
+---- 
+NAME="Red Hat Enterprise Linux"
+VERSION="8.5 (Ootpa)"
+ID="rhel"
+ID_LIKE="fedora"
+VERSION_ID="8.5"
+PLATFORM_ID="platform:el8"
+PRETTY_NAME="Red Hat Enterprise Linux 8.5 (Ootpa)"
+ANSI_COLOR="0;31"
+CPE_NAME="cpe:/o:redhat:enterprise_linux:8::baseos"
+HOME_URL="https://www.redhat.com/"
+DOCUMENTATION_URL="https://access.redhat.com/documentation/red_hat_enterprise_linux/8/"
+BUG_REPORT_URL="https://bugzilla.redhat.com/"
+
+REDHAT_BUGZILLA_PRODUCT="Red Hat Enterprise Linux 8"
+REDHAT_BUGZILLA_PRODUCT_VERSION=8.5
+REDHAT_SUPPORT_PRODUCT="Red Hat Enterprise Linux"
+REDHAT_SUPPORT_PRODUCT_VERSION="8.5"
 ----
 
 ---
-link:Demo_Leapp.adoc[Next Step] or
+link:Demo_Leapp.adoc[Upgrade to the next release of RHEL] or
 link:../README.adoc[Return]

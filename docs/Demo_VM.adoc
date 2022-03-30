@@ -36,6 +36,9 @@ _password_.
 BASE_DIR=/opt/Virtual/ISO
 VM_DIR=/opt/Virtual/images
 
+# Username you're using for general management so we can add SSH Keys
+MY_USER=sellis
+
 # For Centos 7
 OS_VARIANT=centos7
 BASE_IMAGE=CentOS-7-x86_64-GenericCloud-2009.qcow2
@@ -60,10 +63,19 @@ VM_IMAGE=${VM_DIR}/Leepp2RHEL.qcow2
 qemu-img create -f qcow2 -F qcow2 \
 -o backing_file=${VM_BASE} ${VM_IMAGE}
 
+# If we're going to add an SSH Key we need to re-label due to SELinux
+ADD_SSH_KEY=
+
+[ -f /home/${MY_USER}/.ssh/id_rsa.pub ] && \
+  ADD_SSH_KEY="--ssh-inject root:file:/home/${MY_USER}/.ssh/id_rsa.pub --selinux-relabel"
+
 # Enable root password login and remove cloud-init
+# Add our user ssh pubkey if available
+
 virt-customize -a ${VM_IMAGE} \
--root-password password:password --uninstall cloud-init \
---run-command 'echo PermitRootLogin yes >> /etc/ssh/sshd_config' 
+ --root-password password:password --uninstall cloud-init \
+ ${ADD_SSH_KEY} \
+ --run-command 'echo PermitRootLogin yes >> /etc/ssh/sshd_config'
 
 # Then Create the VM
 
@@ -92,8 +104,17 @@ systemctl restart sshd
 ----
 
 I also recommend adding an entry in ~/.ssh/config with the correct IP address for your VM
-which will simplify running the ansible playbook. If you're using KVM you should see the
+which will simplify running the ansible playbook. If you're using KVM you might see the
 IP address in the virsh console.
+
+Another option is to query arp and look for new addresses on your bridge device
+
+[source,bash]
+----
+arp -n | grep ${VM_BRIDGE}
+----
+
+Or you can use the virtual console to login as the root user and confirm the hosts IP Address
 
 ----
 Host leapp2rhel
@@ -121,5 +142,5 @@ rm ${VM_IMAGE}
 ----
 
 ---
-link:Demo_Convert2RHEL.adoc[Next Step] or
+link:Demo_Convert2RHEL.adoc[Convert OS Image to RHEL] or
 link:../README.adoc[Return]

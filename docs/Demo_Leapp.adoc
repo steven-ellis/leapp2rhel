@@ -1,5 +1,25 @@
 = Demo Leapp
 
+*NOTE* This demo will be expanded to include RHEL8 to RHEL9 upgrades post RHEL9 GA.
+
+The Leapp upgrade tooling takes a number of steps to complete the update between
+major versions of Red Hat Enterprise Linux. I recommend you review the Red Hat documentation
+on
+
+- https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/upgrading_from_rhel_7_to_rhel_8/planning-an-upgrade_upgrading-from-rhel-7-to-rhel-8[Planning an Upgrade from RHEL7 to RHEL8]
+
+
+Typically the steps required are
+
+* Environment setup
+* Pre-upgrade report generation and review
+* 2 phase upgrade 
+** in place system preperation
+** boot to temporary RHEL8 initramfs to complete upgrade
+* Post upgrade environment validation
+
+== Environment Setup and Pre-Upgrade Report
+
 We first need to make sure we've got the required repositories and requirements
 for leapp to run.
 
@@ -11,9 +31,11 @@ ansible-playbook  -i hosts setup-leapp.yaml
 ----
 
 We're then going to leverage a https://github.com/mrjoshuap/ansible-leapp[leapp role] from Ansible Galaxy
-developed by one of the Red Hat team.
+developed by link:https://github.com/mrjoshuap[Josh Preston] from Red Hat.
 
-We also need to pull down the latest https://access.redhat.com/articles/3664871[leapp metadata tgz] and install this into the link:../ansible/files[files] directory
+We also need to pull down the latest https://access.redhat.com/articles/3664871[leapp metadata tgz] and install this into the link:../ansible/files[files] directory. The Leapp tool can pull this down automatically from Red Hat, but Josh's playbook installs this manually.
+
+You can then kick off an initial Leapp run via 
 
 [source,bash]
 ----
@@ -22,16 +44,26 @@ ansible-galaxy  install -r requirements.yaml
 ansible-playbook  -i hosts run-leapp.yaml
 ----
 
-You can now browse the https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/upgrading_from_rhel_7_to_rhel_8/assembly_preparing-for-the-upgrade_upgrading-from-rhel-7-to-rhel-8[generated preupgrade report] under link:../ansible/leapp-reports/leapp2rhel/var/log/leapp/leapp-report-preupgrade.txt[leapp-report-preupgrade.txt] or use cockpit on port 9090 to view and
+== Review the pre-upgrade report 
+
+Once completed can browse the https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/upgrading_from_rhel_7_to_rhel_8/assembly_preparing-for-the-upgrade_upgrading-from-rhel-7-to-rhel-8[generated preupgrade report] under link:../ansible/leapp-reports/leapp2rhel/var/log/leapp/leapp-report-preupgrade.txt[leapp-report-preupgrade.txt] or use cockpit on port 9090 (http://<your_vm_ip>:9090) to view and
 remediate potential issues.
 
+image::./leap_report.jpg[]
+
+== Remediate upgrade blockers
+
 With our default Centos to RHEL7 migrated image we get a blocker due to a pam pkcs module
-that requires
+that requires the following response in order for the upgrade to proceed
 
 [source,bash]
 ----
 leapp answer --section remove_pam_pkcs11_module_check.confirm=True
 ----
+
+Or you can use the cockpit interface to select and apply the required remediation
+
+image::./leap_apply_remediation.jpg[]
 
 There are usually a number of additional post upgrade recommendations
 
@@ -39,16 +71,48 @@ There are usually a number of additional post upgrade recommendations
  - Remaining Centos 7 package "yum-plugin-fastestmirror"
  - Grub core isn't updated due to the install location on a legacy environment
 
-Once you've remedated any blockes and undertstand the other potential risks/issues you can login
-to your demo environment and run
+== Complete the RHEL upgrade
+
+Once you've remedated any blockers and undertstand the other potential risks/issues you can run the
+the following via Ansible,
 
 [source,bash]
 ----
-leapp upgrade
+ansible-playbook  -i hosts -e "leapp_skip_upgrade=no" run-leapp.yaml
+
+ssh leapp2rhel reboot
 ----
 
-Once completed make sure you follow the https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/upgrading_from_rhel_7_to_rhel_8/verifying-the-post-upgrade-state-of-the-rhel-8-system_upgrading-from-rhel-7-to-rhel-8[post upgrade verification steps].
+or login to your demo environment and run
 
+[source,bash]
+----
+ssh leapp2rhel
+
+leapp upgrade
+
+reboot
+----
+
+If you want monitor the _leapp upgrade_ process via a second terminal session run the following
+
+[source,bash]
+----
+ssh leapp2rhel tail -f /var/log/leapp/leapp-upgrade.log
+----
+
+And if you want to monitor the initramfs part of the upgrade I recommend you
+connect a virtual console to your demo VM or host
+
+
+[source,bash]
+----
+virsh console ${VM_NAME}
+----
+
+== Post upgrade environment verification
+
+Once completed make sure you follow the https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/upgrading_from_rhel_7_to_rhel_8/verifying-the-post-upgrade-state-of-the-rhel-8-system_upgrading-from-rhel-7-to-rhel-8[post upgrade verification steps].
 
 
 link:../README.adoc[Return]
