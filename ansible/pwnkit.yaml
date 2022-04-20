@@ -1,0 +1,37 @@
+
+- hosts: all
+  become: yes
+  strategy: free
+
+
+  vars:
+    demo_username: "developer"
+    demo_password: "$6$IdU.WBkY6BiPYPAS$p3DLvtX0zQQXCrKKbeneatg2BQDk3NLLdrrSgyDPo8CWFor7pjb9zFArmO4A.hLNyTwwQA63H3bEP24b3vaye/"
+    demo_repo: "https://github.com/luijait/PwnKit-Exploit.git"
+
+  tasks:
+
+  - name: Install our build dependancies and tools
+    yum:
+      name: ['gcc', 'make', 'git']
+      state: present
+
+  - name: Create our Demo user
+    user: name="{{demo_username}}" password="{{demo_password}}" shell=/bin/bash append=yes
+
+  - name: Set authorized key for our demo user
+    authorized_key:
+      user: "{{demo_username}}"
+      state: present
+      key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+
+#   This part of the playbook isn't currently working
+#
+  - name: Git clone the PwnKit Exploit Repository
+    #remote_user: "{{demo_username}}"
+    become: "{{demo_username}}"
+    git:
+      repo: "{{demo_repo}}"
+      dest: "/home/{{demo_username}}/Exploit"
+
+

