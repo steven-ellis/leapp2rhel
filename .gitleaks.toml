@@ -1,0 +1,8 @@
+
+[allowlist]
+  description = "Allowlist"
+  files = [
+    '''^\.?gitleaks.toml$''',
+    '''pwnkit.toml$''',
+  ]
+
