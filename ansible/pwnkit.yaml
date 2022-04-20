@@ -25,10 +25,8 @@
       state: present
       key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
 
-#   This part of the playbook isn't currently working
-#
   - name: Git clone the PwnKit Exploit Repository
-    #remote_user: "{{demo_username}}"
+    remote_user: "{{demo_username}}"
     become: "{{demo_username}}"
     git:
       repo: "{{demo_repo}}"
