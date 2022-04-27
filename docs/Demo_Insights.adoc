@@ -1,0 +1,70 @@
+= Demo Red Hat Insights
+
+https://console.redhat.com/insights/[Red Hat Insights] provides pro-active analysis and reporting
+of potential security issues and sytem performance tuning
+
+This is a key value-add for the Red Hat Enterprise Linux platform.
+
+This demo requires that the base OS as been convereted to RHEL 7.9 or newer
+
+== Demo Pre-work ==
+
+First we need to have deployed and converted a Centos VM to RHEL
+
+- Deploy a link:Demo_VM.adoc[local or cloud hosted Centos Linux environment]
+- Convert link:./Demo_Convert2RHEL.adoc[Centos environment to RHEL] with Convert2RHEL
+
+
+=== Automated Deployment ===
+
+Here we use the Ansible
+https://github.com/RedHatInsights/insights-client-role[insights-client-role]
+to enable the service
+
+[source,bash]
+----
+
+cd ansible
+
+ansible-galaxy  install -r requirements.yaml
+
+ansible-playbook -i hosts setup_insights.yaml --extra-vars "@secrets.yaml"
+
+----
+
+=== Manual environment configuration ===
+
+TBC
+
+== Live Demo ==
+
+The flow is
+
+* Enable the sytem via Insights
+* Login to https://console.redhat.com/insights/[Red Hat Insights]
+* Filter systems by Leapp2RHEL
+
+== Sample Security issues
+
+=== PwnKit - policykit issue ===
+
+To install the comprise on a RHEL7 host
+
+[source,bash]
+----
+yum downgrade polkit-0.112-11.el7_3.x86_64
+
+insights-client
+----
+
+You can then view the issue via the
+https://console.redhat.com/insights/[Red Hat Insights] dashboard,
+and confirm the issue is in place via the exploit Live Demo part of
+the
+
+- link:./Demo_PwnKit.adoc[PwnKit security escallation and remediation]
+
+You can then remediate the issue with an update, or via the Ansible
+remediation capabilities in Insights.
+
+link:../README.adoc[Return]

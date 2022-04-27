@@ -1,3 +1,4 @@
 # from galaxy
 - src: mrjoshuap.leapp
+- src: RedHatInsights.insights-client
 #- src: ansible.posix.authorized_key

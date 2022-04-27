@@ -23,6 +23,7 @@ Here are the setps you can follow to reproduce this demo -
 == Additionl Demo flows
 
 - link:docs/Demo_PwnKit.adoc[PwnKit security escallation and remediation]
+- link:docs/Demo_Insights.adoc[Enable Red Hat Insights Service]
 
 == Product Documentation
 

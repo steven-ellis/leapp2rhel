@@ -1,0 +1,9 @@
+## This is based on the example playbook from
+# https://github.com/RedHatInsights/insights-client-role/blob/master/examples/example-insights-client-playbook.yml
+---
+
+- hosts: all
+  vars_files:
+    - ./secrets.yaml
+  roles:
+  - { role: RedHatInsights.insights-client }
