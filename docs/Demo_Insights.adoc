@@ -28,7 +28,7 @@ cd ansible
 
 ansible-galaxy  install -r requirements.yaml
 
-ansible-playbook -i hosts setup_insights.yaml --extra-vars "@secrets.yaml"
+ansible-playbook -i hosts setup_insights.yaml 
 
 ----
 
@@ -42,9 +42,16 @@ The flow is
 
 * Enable the sytem via Insights
 * Login to https://console.redhat.com/insights/[Red Hat Insights]
-* Filter systems by Leapp2RHEL
+* Tag your new systems as the group LEAPP2RHEL
+* Filter on tag LEAPP2RHEL
 
 == Sample Security issues
+
+=== Outstanding RHEL 8.4 issues ===
+
+The upgrade from RHEL 7.9 is currently to version 8.4 which has a number of known issues.
+
+You can show these outstanding issues via the insights dashboard, including an important CVE.
 
 === PwnKit - policykit issue ===
 
@@ -53,6 +60,20 @@ To install the comprise on a RHEL7 host
 [source,bash]
 ----
 yum downgrade polkit-0.112-11.el7_3.x86_64
+
+insights-client
+----
+
+For RHEL8 we need to make sure we can access older RPMs as the upgrade
+version locks the environment until we complete the cleanup tasks.
+
+[source,bash]
+----
+
+subscription-manager release --unset
+yum check-update
+
+yum downgrade polkit-0.115-9.el8.x86_64
 
 insights-client
 ----
