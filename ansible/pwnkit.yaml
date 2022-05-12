@@ -1,8 +1,8 @@
+---
 
 - hosts: all
-  become: yes
+  become: true
   strategy: free
-
 
   vars:
     demo_username: "developer"
@@ -17,19 +17,17 @@
       state: present
 
   - name: Create our Demo user
-    user: name="{{demo_username}}" password="{{demo_password}}" shell=/bin/bash append=yes
+    user: name="{{ demo_username }}" password="{{ demo_password }}" shell=/bin/bash append=yes
 
   - name: Set authorized key for our demo user
     authorized_key:
-      user: "{{demo_username}}"
+      user: "{{ demo_username }}"
       state: present
       key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
 
   - name: Git clone the PwnKit Exploit Repository
-    remote_user: "{{demo_username}}"
-    become: "{{demo_username}}"
+    remote_user: "{{ demo_username }}"
+    become: "{{ demo_username }}"
     git:
-      repo: "{{demo_repo}}"
-      dest: "/home/{{demo_username}}/Exploit"
-
-
+      repo: "{{ demo_repo }}"
+      dest: "/home/{{ demo_username }}/Exploit"
