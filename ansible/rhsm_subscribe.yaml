@@ -1,0 +1,17 @@
+---
+
+- hosts: all
+  become: true
+  strategy: free
+
+  vars_files:
+    - ./secrets.yaml
+
+  tasks:
+
+  - name: Register with your credentials and auto-subscribe to available content.
+    redhat_subscription:
+      state: present
+      username: "{{ rhsm_username }}"
+      password: "{{ rhsm_password }}"
+      auto_attach: true
