@@ -114,5 +114,29 @@ virsh console ${VM_NAME}
 
 Once completed make sure you follow the https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/upgrading_from_rhel_7_to_rhel_8/verifying-the-post-upgrade-state-of-the-rhel-8-system_upgrading-from-rhel-7-to-rhel-8[post upgrade verification steps].
 
+Some key critical ones are to un-pin the OS version from RHEL 8.4 to allow upgrades, and set https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html/upgrading_from_rhel_7_to_rhel_8/applying-security-policies_upgrading-from-rhel-7-to-rhel-8[SELinux to Enabled].
+
+[source,bash]
+----
+
+# Confirm we're running a pinned release of RHEL 8.4
+subscription-manager release
+
+# Now patch the system to the latest updates from Red Hat
+subscription-manager release --unset
+dnf update
+
+----
+
+Alternatively you might decide to use our EUS release to continue usin RHEL 8.4
+
+[source,bash]
+----
+
+subscription-manager repos --enable  rhel-8-for-x86_64-baseos-eus-rpms \
+  --enable rhel-8-for-x86_64-appstream-eus-rpms
+dnf update
+
+----
 
 link:../README.adoc[Return]
