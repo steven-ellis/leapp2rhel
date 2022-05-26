@@ -22,19 +22,40 @@ the cloud-init capabilities to inject a valid user and credentials, but this is 
 hack to speed up this demo deployment.
 
 == Deployment Customisation
-You will need to update the following varibles to suit you local KVM environment
 
+We provide a sample local environment file link:../local.env.sample[local.env.sample].
+You need to copy this to **local.env**  and update the following varibles to suit you local KVM environment
+
+- MY_USER to your usename so that you ssh pubkey can be utilised
+- BASE_DIR to the location you use to store your base cloud qcow2 images
+- VM_DIR to your working directory for running KVM instances
 - VM_BRIDGE to match the network you're using
-- VM_BASE to the location of the base qcow image we're working off
-- VM_IMAGE to the location you want to use for the working image.
 
 The current process uses ``virt-customize`` to strip out cloud-init
 from the base image and set an initial password for the root user to
 _password_.
 
-== Deploy Centos VM under KVM 
+== Scriptied deployment of Centos / RHEL VM under KVM 
 
+We now have a link:../deploy_vm.sh[fully scripted] approach once you've specified the required overrides in your **local.env** file.
 
+[source,bash]
+----
+# For Centos 7
+sudo  ./deploy_vm.sh create centos7
+
+# For Centos 8
+sudo  ./deploy_vm.sh create centos8
+
+# For RHEL 8
+sudo  ./deploy_vm.sh create rhel7
+
+# For RHEL 8
+sudo  ./deploy_vm.sh create rhel8
+
+----
+
+== Manual Deployment Approach ==
 [source,bash]
 ----
 # Replace these with the locations you use to store base images
@@ -107,6 +128,8 @@ virsh console ${VM_NAME}
 
 ----
 
+== Post deployment steps
+
 The Cloud Ready Centos 7 & 8 images currently allow ssh login as root. 
 If you're working with a vanilla cloud image on AWS or Azure you might
 need to type the following via a remote console.
@@ -146,7 +169,16 @@ ssh-copy-id leapp2rhel
 ----
 
 == Environment Cleanup
-Providing you've got the same shell open you can quickly clean up the deployed environment via
+
+You can now use the link:../deploy_vm.sh[deployment script] to clean up your environment
+
+[source,bash]
+----
+sudo ./deploy_vm.sh cleanup
+----
+
+Alternatively if you've used the manual deployment approayc, and providing you've got the same shell open,
+you can quickly clean up the deployed environment via
 
 [source,bash]
 ----
