@@ -7,8 +7,14 @@ Follow these instructions to run a local VM under KVM + Libvirt.
 
 == Validated Images ==
 
+Centos
+
 * https://cloud.centos.org/altarch/7/images/CentOS-7-x86_64-GenericCloud-2009.qcow2[CentOS-7-x86_64-GenericCloud-2009.qcow2]
 * https://cloud.centos.org/centos/8/x86_64/images/CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2[CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2] - Convert2RHEL only
+
+Red Hat Enterprise Linux
+
+* rhel-server-7.9-x86_64-kvm.qcow2
 
 The process I'm using is I create a working snapshot off the working image and then 
 customize the image to set a simple password for the root user. Ideally we should be using
@@ -46,6 +52,14 @@ BASE_IMAGE=CentOS-7-x86_64-GenericCloud-2009.qcow2
 # For Centos 8
 OS_VARIANT=centos8
 BASE_IMAGE=CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
+
+# For RHEL 7.9
+OS_VARIANT=rhel7.9
+BASE_IMAGE=rhel-server-7.9-x86_64-kvm.qcow2
+
+# For RHEL 8.5
+OS_VARIANT=rhel8.5
+BASE_IMAGE=rhel-8.5-x86_64-kvm.qcow2
 
 # Define our virtual environment
 # Make sure the VM_BRIDE matches a bridge or nat network in your
@@ -143,4 +157,5 @@ rm ${VM_IMAGE}
 
 ---
 link:Demo_Convert2RHEL.adoc[Convert OS Image to RHEL] or
+link:Demo_Leapp.adoc[Upgrade to the next release of RHEL] or
 link:../README.adoc[Return]

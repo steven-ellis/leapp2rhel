@@ -18,6 +18,20 @@ Typically the steps required are
 ** boot to temporary RHEL8 initramfs to complete upgrade
 * Post upgrade environment validation
 
+== Subscribe your RHEL VM
+
+If you've converted a Centos environment to Red Hat Enterprise Linux it will already have a valid
+Red Hat subscription attached. If you're starting with a fresh RHEL image you will need to make
+sure it is correctly entitled in order to pull down the required packages
+
+[source,bash]
+----
+cd ansible
+
+ansible-playbook  -i hosts rhsm_subscribe.yaml
+----
+
+
 == Environment Setup and Pre-Upgrade Report
 
 We first need to make sure we've got the required repositories and requirements
