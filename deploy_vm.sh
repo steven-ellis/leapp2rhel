@@ -23,11 +23,14 @@ R7_BASE_IMAGE=rhel-server-7.9-x86_64-kvm.qcow2
 # For RHEL 8.5
 R8_BASE_IMAGE=rhel-8.5-x86_64-kvm.qcow2
 
+# For RHEL 9.0
+R9_BASE_IMAGE=rhel-baseos-9.0-x86_64-kvm.qcow2
+
 # Define our virtual environment
 # Make sure the VM_BRIDE matches a bridge or nat network in your
 # libvirt environment
 
-VM_NAME=LEAPP2RHEL
+VM_NAME=${VM_NAME:-LEAPP2RHEL}
 VM_MEMORY=2048
 VM_CPU=2
 VM_BRIDGE=${VM_BRIDGE:-virbr1}
@@ -92,7 +95,7 @@ vm_destroy ()
 
 usage ()
 {
-    echo "Usage: $N {create (centos7|centos8|rhel7|rhel8) |status|remove|cleanup|destory|console}" >&2
+    echo "Usage: $N {create (centos7|centos8|rhel7|rhel8|rhel9) |status|remove|cleanup|destory|console}" >&2
     exit 1
 }
 case "$1" in
@@ -113,6 +116,10 @@ case "$1" in
           rhel8)
             OS_VARIANT=rhel8.5
             BASE_IMAGE=${R8_BASE_IMAGE}
+            ;;
+          rhel9)
+            OS_VARIANT=rhel9.0
+            BASE_IMAGE=${R9_BASE_IMAGE}
             ;;
           *)
             usage
