@@ -1,0 +1,119 @@
+= Demo of RHEL 8.x and 9 for APAC Webinar
+
+Deployment steps for setting up an environment to showcase
+
+* leapp from RHEL8 -> RHEL9
+* insights
+* Cockpit console
+* Cloud hosted Image Builder
+* AWS deployment of Cloud Image
+
+This leverages the following parts of our core demo environment
+
+- Deploy a link:./Demo_VM.adoc[local or cloud hosted Centos Linux environment]
+- Upgrade link:./Demo_Leapp.adoc[your RHEL environment] via Leapp
+
+== Environment deployment
+
+This is the pre-work to setup the initial environment and assumes you've completed
+any of the pre-steps under the links above
+
+[source,bash]
+----
+sudo VM_NAME=RHEL8x ./deploy_vm.sh create rhel8
+
+sudo VM_NAME=RHEL9 ./deploy_vm.sh create rhel9
+----
+
+Add these hosts into your local ~/.ssh/config for and confirm you have SSH access.
+In addition you'll require a hosts.demo file for ansible with the following entries
+
+----
+[all]
+rhel8x
+rhel9
+
+[leapp]
+rhel8x
+----
+
+Make sure our RHEL hosts have appropriate hostnames, are subscribed to RHSM,
+have insights enabled, and that leapp is installed on the RHEL8 host
+
+[source,bash]
+----
+ansible-playbook  -i hosts.demo setup-hostname.yaml 
+ansible-playbook  -i hosts.demo rhsm_subscribe.yaml
+ansible-playbook  -i hosts.demo setup-insights.yaml
+ansible-playbook  -i hosts.demo setup-leapp.yaml
+----
+
+Confirm VMs are present in the https://console.redhat.com/insights/inventory[Insights Cloud Console]
+
+Now perform a pre-run of the leapp via SSH as our existing ansible playbook doesn't support RHEL8 -> 9
+at this stage
+
+
+[source,bash]
+----
+ssh root@rhel8x
+
+dnf install -y leapp-upgrade cockpit-leapp
+systemctl enable --now cockpit.socket
+leapp preupgrade --target 9.0
+----
+
+== Image Builder Pre-work
+
+We need to define an initial demo tempate we can re-use during the demo.
+
+* Create a base image *live-demo-example* with packages httpd and postgresql
+** Target VM and AWS
+** Provide your AWS ID.
+
+
+
+== Demo Walkthru
+
+Pre-login to
+
+* https://console.redhat.com/insights/inventory/?status=fresh&status=stale&source=insights&page=1&per_page=50[Insights Cloud Console]
+* AWS Console for cloud deployment
+
+Show off the cockpit console on our RHEL 8 host
+
+* Overview
+* SSH access
+* upgrade report
+
+Connect to the https://console.redhat.com/insights/inventory/?status=fresh&status=stale&source=insights&page=1&per_page=50[Insights Cloud Console]
+
+Insights / Inventory
+
+* RHEL8X host 
+** Overview -> Vulnetabilities.
+* RHEL9 host
+** Overview -> Advisor - We don't recommend OpenSSH as root anymore
+** Vulnerabilty tab - already resolving new vulnerabilities for RHEL9
+
+Image Builder
+
+* Re-create image *live-demo-example* so we can add additional packages etc.
+** Show we can add additional targets
+** Try to avoid showing our AWS Id
+** Add an additional package - eg tmux
+** Click Create
+* Click on *launch instance* for an existing built image
+** Show we can leverage the instance easliy  via the AWS console
+** Speak to adding to our AWS environment so we can use in multiple regions
+
+
+
+== Environment Cleanup
+
+[source,bash]
+----
+sudo VM_NAME=RHEL8x ./deploy_vm.sh cleanup
+
+sudo VM_NAME=RHEL9 ./deploy_vm.sh cleanup
+----

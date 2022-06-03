@@ -1,0 +1,14 @@
+## This is based on the example playbook from
+# https://github.com/RedHatInsights/insights-client-role/blob/master/examples/example-insights-client-playbook.yml
+---
+
+- hosts: all
+  become: true
+  strategy: free
+  
+  tasks:
+
+  - name: Set the system {{inventory_hostname}} hostname based on our inventory
+    hostname:
+      name: "{{inventory_hostname}}.demo"
+  
