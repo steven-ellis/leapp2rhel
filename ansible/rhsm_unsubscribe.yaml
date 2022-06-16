@@ -1,0 +1,19 @@
+---
+
+- hosts: all
+  become: true
+  strategy: free
+
+  vars_files:
+    - ./secrets.yaml
+
+  tasks:
+  #- debug: var=ansible_local.insights.system_id
+
+  - name: Remove this system from Insights
+    ansible.builtin.command: insights-client --unregister
+    when: ansible_local.insights.system_id is defined
+
+  - name: Unsubscribe the system from Red Hat RHSM
+    redhat_subscription:
+      state: absent

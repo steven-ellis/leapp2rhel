@@ -1,0 +1,29 @@
+---
+
+- hosts: cockpit
+  become: yes
+
+  tasks:
+    - name: Install RHEL/Fedora Web Console (Cockpit)
+      include_role:
+        name: linux-system-roles.cockpit
+      vars:
+        cockpit_packages:
+          - cockpit-doc
+          - cockpit-pcp
+          - cockpit-podman
+          - cockpit-session-recording
+          - cockpit-storaged
+          - cockpit-system
+          - cockpit-ws
+        cockpit_enabled: yes
+        cockpit_started: yes
+
+
+    - name: Configure Firewall for Web Console
+      include_role:
+        name: linux-system-roles.firewall
+      vars:
+        firewall:
+          service: cockpit
+          state: enabled

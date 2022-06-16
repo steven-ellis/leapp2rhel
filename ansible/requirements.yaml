@@ -1,4 +1,6 @@
 # from galaxy
 - src: mrjoshuap.leapp
 - src: RedHatInsights.insights-client
+- src: linux-system-roles.cockpit
+- src: linux-system-roles.firewall
 #- src: ansible.posix.authorized_key

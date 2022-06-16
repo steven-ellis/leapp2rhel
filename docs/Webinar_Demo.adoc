@@ -2,9 +2,10 @@
 
 Deployment steps for setting up an environment to showcase
 
-* leapp from RHEL8 -> RHEL9
-* insights
+
 * Cockpit console
+* leapp from RHEL8 -> RHEL9
+* https://www.redhat.com/en/technologies/management/insights[Red Hat Insights]
 * Cloud hosted Image Builder
 * AWS deployment of Cloud Image
 
@@ -37,8 +38,22 @@ rhel9
 rhel8x
 ----
 
-Make sure our RHEL hosts have appropriate hostnames, are subscribed to RHSM,
-have insights enabled, and that leapp is installed on the RHEL8 host
+Pull in any of our required roles from Ansible Galaxy
+
+[source,bash]
+----
+cd ansible
+
+ansible-galaxy  install -r requirements.yaml
+----
+
+Make sure our RHEL Hosts
+
+* hosts have appropriate hostnames
+* are subscribed to RHSM
+* have insights enabled
+* that leapp is installed on the RHEL8 host
+* cockpit is enabled with correct firewall access on our RHEL9 host
 
 [source,bash]
 ----
@@ -46,17 +61,21 @@ ansible-playbook  -i hosts.demo setup-hostname.yaml
 ansible-playbook  -i hosts.demo rhsm_subscribe.yaml
 ansible-playbook  -i hosts.demo setup-insights.yaml
 ansible-playbook  -i hosts.demo setup-leapp.yaml
+ansible-playbook  -i hosts.demo setup-cockpit.yaml
 ----
 
-Confirm VMs are present in the https://console.redhat.com/insights/inventory[Insights Cloud Console]
+Confirm VMs are present in the https://console.redhat.com/insights/inventory[Insights Cloud Console], 
+and confirm you're filtering on *_Data Collector : insights-client_*
 
-Now perform a pre-run of the leapp via SSH as our existing ansible playbook doesn't support RHEL8 -> 9
+Now perform a preupgrade run of leapp via SSH as our existing ansible playbook doesn't support RHEL8 -> 9
 at this stage
 
 
 [source,bash]
 ----
 ssh root@rhel8x
+
+dnf check-update
 
 dnf install -y leapp-upgrade cockpit-leapp
 systemctl enable --now cockpit.socket
@@ -71,14 +90,16 @@ We need to define an initial demo tempate we can re-use during the demo.
 ** Target VM and AWS
 ** Provide your AWS ID.
 
+== Sign into cloud services
 
+Pre-login to to your two cockpit session on *rhel8* and *rhel9* in addition to
+
+* https://console.redhat.com/insights/inventory/?status=fresh&status=stale&source=insights&page=1&per_page=50[Insights Cloud Console]
+* https://aws.amazon.com/[AWS Console] for cloud deployment
 
 == Demo Walkthru
 
-Pre-login to
-
-* https://console.redhat.com/insights/inventory/?status=fresh&status=stale&source=insights&page=1&per_page=50[Insights Cloud Console]
-* AWS Console for cloud deployment
+=== Webconsole / Cockpit
 
 Show off the cockpit console on our RHEL 8 host
 
@@ -86,17 +107,20 @@ Show off the cockpit console on our RHEL 8 host
 * SSH access
 * upgrade report
 
-Connect to the https://console.redhat.com/insights/inventory/?status=fresh&status=stale&source=insights&page=1&per_page=50[Insights Cloud Console]
+Switch to our RHEL9 hosts and use that to jump into *Insights*
 
-Insights / Inventory
+Or alternatively connect to the https://console.redhat.com/insights/inventory/?status=fresh&status=stale&source=insights&page=1&per_page=50[Insights Cloud Console]
 
-* RHEL8X host 
-** Overview -> Vulnetabilities.
+=== Insights / Inventory
+
 * RHEL9 host
 ** Overview -> Advisor - We don't recommend OpenSSH as root anymore
 ** Vulnerabilty tab - already resolving new vulnerabilities for RHEL9
+*** Click on a recent CVE
+* [Optional] RHEL8X host 
+** Overview -> Vulnerabilities.
 
-Image Builder
+=== Image Builder & Launch to Cloud
 
 * Re-create image *live-demo-example* so we can add additional packages etc.
 ** Show we can add additional targets
@@ -110,6 +134,19 @@ Image Builder
 
 
 == Environment Cleanup
+
+I recommend you remove your RHSM and Insights entitlements before deleting any virtual machines
+
+[source,bash]
+----
+# Clean up all hosts in our inventory
+ansible-playbook  -i hosts.demo rhsm_unsubscribe.yaml
+
+# Or for one specific host specify the hostname
+ansible-playbook  -i hosts.demo rhsm_unsubscribe.yaml -l rhel8x
+----
+
+Now remove the virtual machines along with the QCOW2 working snapshots
 
 [source,bash]
 ----
