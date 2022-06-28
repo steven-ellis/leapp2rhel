@@ -7,7 +7,7 @@
 if [ -f local.env ]; then
     source local.env
 else
-   echo "You need to supply a local.env file - refernce local.env.sample">&2
+   echo "You need to supply a local.env file - reference local.env.sample">&2
    exit -1
 fi
 
