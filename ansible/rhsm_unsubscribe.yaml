@@ -15,5 +15,7 @@
     when: ansible_local.insights.system_id is defined
 
   - name: Unsubscribe the system from Red Hat RHSM
-    redhat_subscription:
-      state: absent
+    ansible.builtin.command: subscription-manager unregister
+    # This approach isn't currently working on rhel9
+    #redhat_subscription:
+      #state: absent

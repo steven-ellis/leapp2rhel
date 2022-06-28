@@ -20,10 +20,14 @@ Here are the setps you can follow to reproduce this demo -
 - Convert link:docs/Demo_Convert2RHEL.adoc[Centos environment to RHEL] with Convert2RHEL
 - Upgrade link:docs/Demo_Leapp.adoc[your RHEL environment] via Leapp
 
-== Additionl Demo flows
+== Supplimentary Demo Elements
 
 - link:docs/Demo_PwnKit.adoc[PwnKit security escallation and remediation]
 - link:docs/Demo_Insights.adoc[Enable Red Hat Insights Service]
+
+== Alternative Demo Flows
+
+- link:docs/Webinar_Demo.adoc[Cockpit + Leapp + Insights + ImageBuilder demo]
 
 == Product Documentation
 

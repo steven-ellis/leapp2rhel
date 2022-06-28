@@ -1,0 +1,17 @@
+---
+  - name : Setup Hostnames
+    import_playbook: setup-hostname.yaml 
+
+  - name : Subscribe systems to RHSM
+    import_playbook: rhsm_subscribe.yaml
+
+  - name : Setup RH Insights
+    import_playbook: setup-insights.yaml
+
+  - name : Setup Leapp 
+    import_playbook: setup-leapp.yaml
+
+  - name : Setup Cockpit Web Console
+    import_playbook: setup-cockpit.yaml
+
+

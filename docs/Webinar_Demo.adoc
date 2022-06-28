@@ -7,7 +7,7 @@ Deployment steps for setting up an environment to showcase
 * leapp from RHEL8 -> RHEL9
 * https://www.redhat.com/en/technologies/management/insights[Red Hat Insights]
 * Cloud hosted Image Builder
-* AWS deployment of Cloud Image
+* AWS deployment of an Image Builder generated image.
 
 This leverages the following parts of our core demo environment
 
@@ -26,8 +26,26 @@ sudo VM_NAME=RHEL8x ./deploy_vm.sh create rhel8
 sudo VM_NAME=RHEL9 ./deploy_vm.sh create rhel9
 ----
 
-Add these hosts into your local ~/.ssh/config for and confirm you have SSH access.
-In addition you'll require a hosts.demo file for ansible with the following entries
+Add these hosts into your local _~/.ssh/config_ for and confirm you have SSH access.
+Here example entries where you will need to supply the correct IP address for your VMs.
+
+----
+
+Host rhel9
+Hostname 192.168.XXX.YYY
+StrictHostKeyChecking no
+UserKnownHostsFile /dev/null
+User root
+
+Host rhel8x
+Hostname 192.168.XXX.ZZZ
+StrictHostKeyChecking no
+UserKnownHostsFile /dev/null
+User root
+
+----
+
+In addition you'll require an Ansible inventory file _hosts.demo_ with the following entries
 
 ----
 [all]
@@ -47,21 +65,17 @@ cd ansible
 ansible-galaxy  install -r requirements.yaml
 ----
 
-Make sure our RHEL Hosts
+Using the link:../ansible/webinar-demo.yaml[webinar-demo] playbook make sure our RHEL Hosts
 
-* hosts have appropriate hostnames
+* have appropriate hostnames
 * are subscribed to RHSM
-* have insights enabled
+* have RH Insights enabled
 * that leapp is installed on the RHEL8 host
 * cockpit is enabled with correct firewall access on our RHEL9 host
 
 [source,bash]
 ----
-ansible-playbook  -i hosts.demo setup-hostname.yaml 
-ansible-playbook  -i hosts.demo rhsm_subscribe.yaml
-ansible-playbook  -i hosts.demo setup-insights.yaml
-ansible-playbook  -i hosts.demo setup-leapp.yaml
-ansible-playbook  -i hosts.demo setup-cockpit.yaml
+ansible-playbook  -i hosts.demo webinar-demo.yaml 
 ----
 
 Confirm VMs are present in the https://console.redhat.com/insights/inventory[Insights Cloud Console], 
@@ -75,8 +89,9 @@ at this stage
 ----
 ssh root@rhel8x
 
-dnf check-update
+# Wait for login to complete
 
+dnf check-update
 dnf install -y leapp-upgrade cockpit-leapp
 systemctl enable --now cockpit.socket
 leapp preupgrade --target 9.0
