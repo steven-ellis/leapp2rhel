@@ -33,14 +33,14 @@ hack to speed up this demo deployment.
 == Deployment Customisation
 
 We provide a sample local environment file link:../local.env.sample[local.env.sample].
-You need to copy this to **local.env**  and update the following varibles to suit you local KVM environment
+You will need to copy this to **local.env**  and update the following variables to suit your local KVM environment
 
-- MY_USER to your usename so that you ssh pubkey can be utilised
+- MY_USER to your usename so that your ssh pubkey can be utilised
 - BASE_DIR to the location you use to store your base cloud qcow2 images
 - VM_DIR to your working directory for running KVM instances
 - VM_BRIDGE to match the network you're using
 
-== Scriptied deployment of Centos / RHEL VM under KVM 
+== Scripted deployment of Centos / RHEL VM under KVM 
 
 We now have a link:../deploy_vm.sh[fully scripted] approach once you've specified the required overrides in your **local.env** file.
 
@@ -160,7 +160,8 @@ UserKnownHostsFile /dev/null
 User root
 ----
 
-You should then enable login via your ssh-key so that Ansible can automate the rest of the setup
+The setup script will try to inject your ssh pub-key, but if that isn't working you should copy your
+ssh-key over so that Ansible can automate the rest of the setup
 
 [source,bash]
 ----
