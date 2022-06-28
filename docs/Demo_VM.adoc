@@ -6,6 +6,7 @@ cloud ready image, and skip to the setup of the demo tooling using link:./Demo_S
 Follow these instructions to run a local VM under KVM + Libvirt.
 
 == Validated Images ==
+For the latest validated images reference the link:../deploy_vm.sh[VM deployment script].
 
 Centos
 
@@ -15,10 +16,18 @@ Centos
 Red Hat Enterprise Linux
 
 * rhel-server-7.9-x86_64-kvm.qcow2
+* rhel-8.5-x86_64-kvm.qcow2
+* rhel-baseos-9.0-x86_64-kvm.qcow2
 
-The process I'm using is I create a working snapshot off the working image and then 
-customize the image to set a simple password for the root user. Ideally we should be using
-the cloud-init capabilities to inject a valid user and credentials, but this is a quick
+The process I'm using to create these ephemeral VM environments is to use
+``virt-customize`` to
+
+* create a working _copy on write_ snapshot from the standard kvm qcow2 image 
+* remove cloud-init
+* customize the image to set a simple _password_ for the root user
+* inject an SSH pubkey for passwordless access
+
+Ideally we should be using the cloud-init capabilities to inject a valid user and credentials, but this is a quick
 hack to speed up this demo deployment.
 
 == Deployment Customisation
@@ -31,27 +40,17 @@ You need to copy this to **local.env**  and update the following varibles to sui
 - VM_DIR to your working directory for running KVM instances
 - VM_BRIDGE to match the network you're using
 
-The current process uses ``virt-customize`` to strip out cloud-init
-from the base image and set an initial password for the root user to
-_password_.
-
 == Scriptied deployment of Centos / RHEL VM under KVM 
 
 We now have a link:../deploy_vm.sh[fully scripted] approach once you've specified the required overrides in your **local.env** file.
 
 [source,bash]
 ----
-# For Centos 7
-sudo  ./deploy_vm.sh create centos7
+# For Centos 7/8
+sudo  ./deploy_vm.sh create [centos7|centos8]
 
-# For Centos 8
-sudo  ./deploy_vm.sh create centos8
-
-# For RHEL 8
-sudo  ./deploy_vm.sh create rhel7
-
-# For RHEL 8
-sudo  ./deploy_vm.sh create rhel8
+# For RHEL 7/8/9
+sudo  ./deploy_vm.sh create [rhel7|rhel8|rhel9]
 
 ----
 
@@ -169,6 +168,14 @@ ssh-copy-id leapp2rhel
 ----
 
 == Environment Cleanup
+
+I recommend you remove your RHSM and Insights entitlements before deleting any virtual machines
+
+[source,bash]
+----
+# Clean up all hosts in our inventory
+ansible-playbook  -i hosts rhsm_unsubscribe.yaml
+----
 
 You can now use the link:../deploy_vm.sh[deployment script] to clean up your environment
 
