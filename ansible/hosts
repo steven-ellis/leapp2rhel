@@ -1,3 +1,6 @@
 #
 [convert2rhel]
 leapp2rhel
+
+[leapp]
+leapp2rhel

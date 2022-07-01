@@ -21,6 +21,17 @@ nano secrets.yaml
 cd -
 ----
 
+== Centos 7 Update Kernel
+*NOTE* There have been recent Centos 7.x kernel updates that block the convert2rhel tools if you're using the Cento 7.9 image recommended in the link:./Demo_VM.adoc[local VM deployment guide]. The following will update to the latest kernel and resolve the issue.
+
+[source,bash]
+----
+ssh leapp2rhel
+
+# wait for the login to complete
+yum check-update  yum -y upgrade kernel && reboot
+----
+
 == Centos 8 Initial Upgrade Step
 *NOTE* If you're using the standard Centos 8 Cloud Image from the previous step this will need to be patched to Centos 8.5
 before running Convert2RHEL.
