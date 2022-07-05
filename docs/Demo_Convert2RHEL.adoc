@@ -29,7 +29,7 @@ cd -
 ssh leapp2rhel
 
 # wait for the login to complete
-yum check-update  yum -y upgrade kernel && reboot
+yum check-update ; yum -y upgrade kernel && reboot
 ----
 
 == Centos 8 Initial Upgrade Step
