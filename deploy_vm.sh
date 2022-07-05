@@ -12,19 +12,19 @@ else
 fi
 
 # For Centos 7
-C7_BASE_IMAGE=CentOS-7-x86_64-GenericCloud-2009.qcow2
+C7_BASE_IMAGE=${C7_BASE_IMAGE:-CentOS-7-x86_64-GenericCloud-2009.qcow2}
 
 # For Centos 8
-C8_BASE_IMAGE=CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2
+C8_BASE_IMAGE=${C8_BASE_IMAGE:-CentOS-8-GenericCloud-8.4.2105-20210603.0.x86_64.qcow2}
 
 # For RHEL 7.9
-R7_BASE_IMAGE=rhel-server-7.9-x86_64-kvm.qcow2
+R7_BASE_IMAGE=${R7_BASE_IMAGE:-rhel-server-7.9-x86_64-kvm.qcow2}
 
 # For RHEL 8.5
-R8_BASE_IMAGE=rhel-8.5-x86_64-kvm.qcow2
+R8_BASE_IMAGE=${R8_BASE_IMAGE:-rhel-8.5-x86_64-kvm.qcow2}
 
 # For RHEL 9.0
-R9_BASE_IMAGE=rhel-baseos-9.0-x86_64-kvm.qcow2
+R9_BASE_IMAGE=${R9_BASE_IMAGE:-rhel-baseos-9.0-x86_64-kvm.qcow2}
 
 # Define our virtual environment
 # Make sure the VM_BRIDE matches a bridge or nat network in your
