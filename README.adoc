@@ -1,14 +1,17 @@
 = leapp2rhel
 Centos to RHEL demo with additional upgrade step
 
-This leverages to key Red Hat projects
+This leverages two key Red Hat projects in addition to our
+https://www.redhat.com/Ansible[Ansible] automation
 
  - https://github.com/oamg/convert2rhel[Convert2RHEL]
  - https://github.com/oamg/leapp[Leapp]
 
 == Demo Overview
 
-This demo migrates standard cloud Centos images to recent releases of https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux[Red Hat Enterprise Linux].
+This demo migrates standard cloud Centos images to recent releases of https://www.redhat.com/en/technologies/linux-platforms/enterprise-linux[Red Hat Enterprise Linux], or can be used to show in-place upgrades between versions of RHEL.
+
+There are additional demo flows that include the Cockpit web console, our Red Hat Insights capability, and our Image Builder SaaS offering.
 
 image::docs/leapp2rhel.png[] 
 
