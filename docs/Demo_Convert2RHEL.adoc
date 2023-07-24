@@ -91,6 +91,24 @@ the convert2rhel logs.
 ssh leapp2rhel  tail -f /var/log/convert2rhel/convert2rhel.log
 ----
 
+== Manually use convert2rhel on command line
+
+This approach is useful in a customer environment if they want to see the console level
+feedback from the convert2rhel tooling. Whist you can use the
+link:https://access.redhat.com/documentation/en-us/red_hat_enterprise_linux/8/html-single/converting_from_an_rpm-based_linux_distribution_to_rhel/index[Convert to RHEL documentation]
+ to perform the setup tasks manually, I recommend you use the 
+_setup-convert2rhel.yml_ step above. You can then SSH in and perform the conversion.
+
+*NOTE* you will be prompted for your Red Hat support portal username and password.
+
+[source,bash]
+----
+ssh leap2rhel
+
+convert2rhel
+----
+
+
 == Confirm upgraded OS Version
 
 [source,bash]
