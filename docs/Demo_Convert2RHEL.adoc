@@ -36,7 +36,9 @@ yum check-update ; yum -y upgrade kernel && reboot
 *NOTE* If you're using the standard Centos 8 Cloud Image from the previous step this will need to be patched to Centos 8.5
 before running Convert2RHEL.
 
-As Centos 8 is now EOL you need to update the YUM repostory to point to vault.centos.org in order to update.
+As Centos 8 is now EOL you need to update the YUM repostory to point to vault.centos.org in order to update. The
+_setup-convert2rhel.yml_ step below now includes automation to update the Centos instance to point at the correct
+repositories and you can skip the manual steps below.
 
 [source,bash]
 ----
