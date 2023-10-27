@@ -24,7 +24,7 @@ R7_BASE_IMAGE=${R7_BASE_IMAGE:-rhel-server-7.9-x86_64-kvm.qcow2}
 R8_BASE_IMAGE=${R8_BASE_IMAGE:-rhel-8.5-x86_64-kvm.qcow2}
 
 # For RHEL 9.0
-R9_BASE_IMAGE=${R9_BASE_IMAGE:-rhel-baseos-9.0-x86_64-kvm.qcow2}
+R9_BASE_IMAGE=${R9_BASE_IMAGE:-rhel-9.2-x86_64-kvm.qcow2}
 
 # Define our virtual environment
 # Make sure the VM_BRIDE matches a bridge or nat network in your
